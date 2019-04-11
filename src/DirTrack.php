@@ -31,7 +31,11 @@ class DirTrack
      */
     public function work()
     {
-        $timeStampFile = __DIR__.'/last_timestamp';
+        $timeStampFile = dirname(__DIR__).'/last_timestamp';
+        if(!file_exists($timeStampFile))
+        {
+            file_put_contents($timeStampFile, "");
+        }
         $lastTrackedTimeStamp  = (int)file_get_contents($timeStampFile);
         file_put_contents($timeStampFile, time());
         $files = glob_recursive($this->directoryToTrack.'/*');
