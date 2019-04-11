@@ -46,23 +46,23 @@ class DirTrack
         print count($files).": New File(s) Found".PHP_EOL;
         foreach ($files as $file)
         {
-            $keyword = basename(dirname($file));
-            $contentOfNewDirectories = file_get_contents($file);
-            $this->sendEmailToAdmin($keyword, $contentOfNewDirectories);
+            $this->sendEmailToAdmin($file);
         }
     }
 
-
     /**
-     * @param $keyword
-     * @param $content
+     * @param $file
      */
-    private function sendEmailToAdmin($keyword, $content)
+    private function sendEmailToAdmin($file)
     {
         if(!env('SEND_MAIL'))
         {
             return ;
         }
+        $keyword = basename(dirname($file));
+        $pasteBinId = basename($file);
+        $content = file_get_contents($file);
+
         //Create a new PHPMailer instance
         $mail = $this->mailer;
         $mail->isSMTP();
@@ -90,9 +90,9 @@ class DirTrack
 
         //Set who the message is to be sent to
         $mail->addAddress(env('ADMIN_EMAIL'));
-        $mail->Subject = 'New Paste With Keywork'.$keyword.' Found';
+        $mail->Subject = 'New Paste With Keywork: '.$keyword.' Found';
 
-        $mail->Body = 'Content Of Paste.'.PHP_EOL.trim($content);
+        $mail->Body = "Pastebin Id: {$pasteBinId} \nContent Of Paste:.".PHP_EOL.trim($content);
         //send the message, check for errors
         if (!$mail->send()) {
             echo "Mailer Error: " . $mail->ErrorInfo.PHP_EOL;
