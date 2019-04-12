@@ -63,8 +63,6 @@ class DirTrack
         {
             return ;
         }
-        $keyword = basename(dirname($file));
-        $pasteBinId = basename($file);
         $content = file_get_contents($file);
 
         //Create a new PHPMailer instance
@@ -94,9 +92,9 @@ class DirTrack
 
         //Set who the message is to be sent to
         $mail->addAddress(env('ADMIN_EMAIL'));
-        $mail->Subject = 'New Paste With Keywork: '.$keyword.' Found';
+        $mail->Subject = 'New File Has Been Detected';
 
-        $mail->Body = "Pastebin Id: {$pasteBinId} \nContent Of Paste:.".PHP_EOL.trim($content);
+        $mail->Body = "File: {$file} \nContent Of File:".PHP_EOL.trim($content);
         //send the message, check for errors
         if (!$mail->send()) {
             echo "Mailer Error: " . $mail->ErrorInfo.PHP_EOL;
